@@ -37,3 +37,6 @@ input[type=text], select{
 .btn{
  border-radius: 0px; 
 }
+.message{
+  font-weight: 900;
+}

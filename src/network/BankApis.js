@@ -11,7 +11,9 @@ function BankApi(city, onSuccess, onError){
       }else{
         onError(prevResponse.result)
       }
-    }else{
+    }
+    else{
+      
       fetch(url)
       .then(res => res.json())
       .then(

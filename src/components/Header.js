@@ -20,6 +20,11 @@ class Header extends React.Component{
 
     handleChange = (event) => {
         this.setState({city: event.target.value},()=>{
+            this.setState({
+                    
+                isLoaded: false,
+                
+              });
             this.fetchBanksDetails(this.state.city);
         });
     }
@@ -76,12 +81,16 @@ class Header extends React.Component{
         BankApi(city,
             (res)=>{
                 this.setState({
+                    
                     isLoaded: true,
                     bankdata: res
                   });
             },
             (error)=>{
-                console.log(error)
+                this.setState({
+                    isLoaded: true,
+                    error
+                  });
             });
     }
 
@@ -150,71 +159,81 @@ class Header extends React.Component{
             pointerEvents: 'none',
             cursor: 'default'
         }
-
+        let message;  
+        if (this.state.error) {
+             message =  <div>Error: {this.state.error.message}</div>;
+          } else if (!this.state.isLoaded) {
+             message =  <div className="message">Loading...</div>;
+          }
+          else{
+              
+             message = currentItem.map(item => (
+                <tr key={item.ifsc} style={this.state.favourite.includes(item.ifsc) ? favStyle : null}>
+                    <td><input type="checkbox" name="favourite" checked={this.state.favourite.includes(item.ifsc)} value={item.ifsc} onChange={(event)=>this.handleFav(event)}  /></td>
+                    <td>{item.bank_name}</td>
+                    <td>{item.ifsc}</td>
+                    <td>{item.branch}</td>
+                    <td>{item.address}</td>
+                    <td>{item.city}</td>
+                    <td>{item.district}</td>
+                    <td>{item.state}</td>
+                </tr>
+                ))
+          }
         return(
-            <div>
-            <div className="header">
-                <h1>Bank Search Application</h1>
-                <div className="row search">
-                    <div className="col-sm-2">
-                    
-                        <select name="cities" value={this.state.city} onChange={this.handleChange}>
-                            <option value="DELHI">Delhi</option>
-                            <option value="MUMBAI">Mumbai</option>
-                            <option value="BANGALORE">Bangalore</option>
-                            <option value="KOLKATA">Kolkata</option>
-                            <option value="CHENNAI">Chennai</option>
-                        </select>
-                    
-                    </div>
-                    <div className="col-sm-8">
-                        <input type="text" onChange={this.handleSearch} placeholder="Search"/>
-                    </div>
-                    <div className="col-sm-2">
-                        <select name="cities" value={this.state.itemPerPage} onChange={this.handlePageSize}>
-                            <option value="10">Table Size</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                            <option value="50">50</option>
-                        </select>
-                    </div>
-                    
-                </div>
-            </div>
-            <div className="table-responsive table-section mt-5">
-                <table className="table">
-                    <thead className="thead-dark">
-                        <tr>
-                        <th scope="col">Fav</th>
-                        <th scope="col">Bank Name</th>
-                        <th scope="col">IFSC</th>
-                        <th scope="col">Branch</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">City</th>
-                        <th scope="col">District</th>
-                        <th scope="col">State</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       
-                    {currentItem.map(item => (
-                        <tr key={item.ifsc} style={this.state.favourite.includes(item.ifsc) ? favStyle : null}>
-                            <td><input type="checkbox" name="favourite" checked={this.state.favourite.includes(item.ifsc)} value={item.ifsc} onChange={(event)=>this.handleFav(event)}  /></td>
-                            <td>{item.bank_name}</td>
-                            <td>{item.ifsc}</td>
-                            <td>{item.branch}</td>
-                            <td>{item.address}</td>
-                            <td>{item.city}</td>
-                            <td>{item.district}</td>
-                            <td>{item.state}</td>
-                        </tr>
-                        ))} 
-                    </tbody>
-                </table>
-            </div>
             
-            <div> 
+            <div>
+                <div className="header">
+                    <h1>Bank Search Application</h1>
+                    <div className="row search">
+                        <div className="col-sm-2">
+                        
+                            <select name="cities" value={this.state.city} onChange={this.handleChange}>
+                                <option value="DELHI">Delhi</option>
+                                <option value="MUMBAI">Mumbai</option>
+                                <option value="BANGALORE">Bangalore</option>
+                                <option value="KOLKATA">Kolkata</option>
+                                <option value="CHENNAI">Chennai</option>
+                            </select>
+                        
+                        </div>
+                        <div className="col-sm-8">
+                            <input type="text" onChange={this.handleSearch} placeholder="Search"/>
+                        </div>
+                        <div className="col-sm-2">
+                            <select name="cities" value={this.state.itemPerPage} onChange={this.handlePageSize}>
+                                <option value="10">Table Size</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div className="table-responsive table-section mt-5">
+                    <table className="table">
+                        <thead className="thead-dark">
+                            <tr>
+                            <th scope="col">Fav</th>
+                            <th scope="col">Bank Name</th>
+                            <th scope="col">IFSC</th>
+                            <th scope="col">Branch</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">City</th>
+                            <th scope="col">District</th>
+                            <th scope="col">State</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {message}
+                         
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div> 
                 <ul className="pagination justify-content-center" id="page-numbers">
                     <button onClick={()=>this.updateCurrPage(0)} className="btn btn-primary" style={currentPage == 1 ? disableBtn : null }>Prev</button>
                     {renderPageNumbers}
