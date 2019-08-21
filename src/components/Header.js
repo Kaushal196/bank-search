@@ -30,7 +30,9 @@ class Header extends React.Component{
     }
 
     handleSearch = (event) => {
-        this.setState({ filter: event.target.value });
+        this.setState({ filter: event.target.value,
+                         currentPage : 1   
+        });
     }
 
     handleClick= (event) => {
@@ -104,6 +106,7 @@ class Header extends React.Component{
 
     render(){
         //search 
+        
         const { filter, bankdata} = this.state;
         const lowercasedFilter = filter.toLowerCase();
         const filteredData = bankdata.filter(item => {
@@ -112,17 +115,18 @@ class Header extends React.Component{
         );
         });
         console.log(filteredData)
+        
         //pagination
         const { currentPage, itemPerPage } = this.state;
 
-        // Logic for displaying current todos
+        // Logic for displaying current Items
         const indexOfLastItem = currentPage * itemPerPage;
         const indexOfFirstItem = indexOfLastItem - itemPerPage;
-        console.log(indexOfFirstItem, indexOfLastItem)
         const currentItem = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+        
         const totalpage = Math.ceil(filteredData.length/itemPerPage);
-       
-       
+        
+        
         // Logic for displaying page numbers
         const pageNumbers = [];
         
@@ -142,7 +146,6 @@ class Header extends React.Component{
         const renderPageNumbers = pageNumbers.map(number => {
             return (
               <li
-                className="page-item"
                 key={number}
                 id={number}
                 onClick={this.handleClick}
