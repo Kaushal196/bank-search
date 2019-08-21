@@ -3,7 +3,7 @@ import BankApi from "../network/BankApis"
 class Header extends React.Component{
     constructor(){
         super();
-        this.state ={
+        this.state = {
             city : 'DELHI',
             isLoaded: false,
             error: null,
@@ -12,7 +12,7 @@ class Header extends React.Component{
             filter: "",
             currentPage: 1,
             itemPerPage: 10,
-            favroute: [],
+            favourite: [],
             
 
         }
@@ -36,19 +36,19 @@ class Header extends React.Component{
 
     handleFav = (event) => {
        let a = event.target.value;
-       if(this.state.favroute.includes(a)){
+       if(this.state.favourite.includes(a)){
             
             this.setState((prevState)=>({
-                favroute: prevState.favroute.filter(ele => ele!= a)
+                favourite: prevState.favourite.filter(ele => ele!= a)
             }), () => {
-                localStorage.setItem("favroutes", JSON.stringify(this.state.favroute));
+                localStorage.setItem("favourites", JSON.stringify(this.state.favourite));
             })
         }
         else{
             this.setState((prevState)=>({
-                favroute: prevState.favroute.concat(a)
+                favourite: prevState.favourite.concat(a)
              }), () => {
-                localStorage.setItem("favroutes", JSON.stringify(this.state.favroute));
+                localStorage.setItem("favourites", JSON.stringify(this.state.favourite));
             })
         }
        
@@ -87,9 +87,9 @@ class Header extends React.Component{
 
     componentDidMount() {
        this.fetchBanksDetails(this.state.city);
-       let retrievedFavData = JSON.parse(localStorage.getItem("favroutes"));
+       let retrievedFavData = JSON.parse(localStorage.getItem("favourites")) || [];
        this.setState((prevState)=>({
-        favroute: retrievedFavData
+        favourite: retrievedFavData
         }))
       }
 
@@ -126,7 +126,8 @@ class Header extends React.Component{
             
         }
         const currPageStyle ={
-            background: '#a9a9a9'
+            backgroundColor: '#007bff',
+            color:'#fff'
         }
 
         const renderPageNumbers = pageNumbers.map(number => {
@@ -198,8 +199,8 @@ class Header extends React.Component{
                     <tbody>
                        
                     {currentItem.map(item => (
-                        <tr key={item.ifsc} style={this.state.favroute.includes(item.ifsc)? favStyle : null}>
-                            <td><input type="checkbox" name="favroute" checked={this.state.favroute.includes(item.ifsc)} value={item.ifsc} onChange={(event)=>this.handleFav(event)}  /></td>
+                        <tr key={item.ifsc} style={this.state.favourite.includes(item.ifsc) ? favStyle : null}>
+                            <td><input type="checkbox" name="favourite" checked={this.state.favourite.includes(item.ifsc)} value={item.ifsc} onChange={(event)=>this.handleFav(event)}  /></td>
                             <td>{item.bank_name}</td>
                             <td>{item.ifsc}</td>
                             <td>{item.branch}</td>
